@@ -1,0 +1,224 @@
+import org.apache.tools.ant.taskdefs.condition.Os
+
+plugins {
+  id 'java-library'
+  id 'groovy'
+  id 'maven-publish'
+  id 'signing'
+}
+
+defaultTasks 'jars'
+
+archivesBaseName = 'fjage'
+group = 'com.github.org-arl'
+version = new File(projectDir, 'VERSION').text.trim()
+
+// get git commit
+def stdout = new ByteArrayOutputStream()
+exec {
+  commandLine 'git', 'describe', '--always', '--abbrev=8', '--match', 'NOT A TAG', '--dirty=*'
+  standardOutput = stdout;
+}
+def commit = "$stdout".replace('\n','')
+
+// check if npm exists
+def npmcmd = Os.isFamily(Os.FAMILY_WINDOWS) ? "npm.cmd" : "npm"
+boolean npmExists = false
+try {
+  def npmproc = "$npmcmd -v".execute()
+  npmproc.waitForOrKill(3000)
+  npmExists = npmproc.exitValue() == 0
+} catch (IOException ex){}
+
+targetCompatibility = 1.8
+sourceCompatibility = 1.8
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  api 'org.codehaus.groovy:groovy:2.5.20'
+  api 'org.jline:jline:3.21.0'
+  api 'org.apache.commons:commons-lang3:3.12.0'
+  api 'commons-io:commons-io:2.11.0'
+  api 'uk.com.robust-it:cloning:1.9.12'
+  api 'org.eclipse.jetty:jetty-server:9.4.50.v20221201'
+  api 'org.eclipse.jetty:jetty-servlet:9.4.50.v20221201'
+  api 'org.eclipse.jetty:jetty-rewrite:9.4.50.v20221201'
+  api 'org.eclipse.jetty.websocket:websocket-server:9.4.50.v20221201'
+  api 'com.google.code.gson:gson:2.10'
+  api 'com.fazecast:jSerialComm:2.9.3'
+  testImplementation 'junit:junit:4.13.2'
+  testImplementation 'net.jodah:concurrentunit:0.4.6'
+}
+
+compileJava {
+  options.compilerArgs << "-Xlint:all"
+  options.compilerArgs << "-Xlint:-options"
+}
+
+compileTestJava {
+  options.compilerArgs << "-Xlint:all"
+  options.compilerArgs << "-Xlint:-options"
+}
+
+compileGroovy {
+  options.compilerArgs << "-Xlint:all"
+  options.compilerArgs << "-Xlint:-options"
+}
+
+test {
+  systemProperties project.properties.subMap(["manualJSTest"])
+  systemProperties project.properties.subMap(["manualPyTest"])
+}
+
+tasks.withType(Javadoc) {
+  options.addStringOption('Xdoclint:none', '-quiet')
+}
+
+jar {
+  manifest {
+    attributes (
+      "Build-Owner": System.getenv().USER ?: "fjage",
+      "Build-Timestamp": new Date().format('d-MM-yyyy_HH:mm:ss'),
+      "Build-Version": "${project.version}/${commit}")
+  }
+}
+
+test {
+  testLogging {
+    events "passed", "skipped", "failed"
+    exceptionFormat "full"
+  }
+}
+
+task lite(dependsOn: jar, type: Copy) {
+  into "$buildDir/libs"
+  from configurations.runtimeClasspath
+}
+
+task buildjs {
+  inputs.files fileTree('gateways/js/src').include('**/*.js'), "gateways/js/package.json"
+  outputs.dir "gateways/js/dist"
+
+  doLast {
+    if (npmExists) {
+      exec {
+        workingDir 'gateways/js'
+        executable npmcmd
+        args System.getenv('CI') != null ? 'ci' : "install"
+        errorOutput = new ByteArrayOutputStream()
+        standardOutput = new ByteArrayOutputStream()
+      }
+      exec {
+        workingDir 'gateways/js'
+        executable npmcmd
+        args 'run', 'build'
+      }
+    } else{
+      project.logger.lifecycle('npm not found. Using cached fjage.js build')
+    }
+  }
+}
+
+test.dependsOn 'buildjs'
+
+task jars() {
+  dependsOn 'lite'
+  dependsOn 'buildjs'
+  tasks.findByName('buildjs').mustRunAfter 'lite'
+}
+
+jars.outputs.upToDateWhen { false }
+
+javadoc.doLast {
+  mkdir 'docs/javadoc'
+  copy {
+    from javadoc.destinationDir
+    into 'docs/javadoc'
+  }
+}
+
+task jsdoc(type: Exec){
+  workingDir 'gateways/js'
+  executable npmcmd
+  args = ['run', 'docs']
+}
+
+task updatexterm {
+  doLast {
+    exec {
+      workingDir '.'
+      executable npmcmd
+      args 'install', 'xterm@4.19.0', 'xterm-addon-attach@0.6.0', 'xterm-addon-fit@0.5.0', 'xterm-addon-web-links@0.6.0'
+    }
+    copy {
+      from (['node_modules/xterm-addon-web-links/lib', 'node_modules/xterm-addon-attach/lib', 'node_modules/xterm-addon-fit/lib', 'node_modules/xterm/lib']) {
+        include '*.js'
+      }
+      from ('node_modules/xterm/css'){
+        include 'xterm.css'
+      }
+      into 'src/main/resources/org/arl/fjage/web/shell'
+    }
+    delete "node_modules", "package.json", "package-lock.json"
+  }
+}
+
+////// tasks for MavenCentral deployment
+
+java {
+  withJavadocJar()
+  withSourcesJar()
+}
+
+publishing {
+  if (project.hasProperty('sonatypeUsername') && project.hasProperty('sonatypePassword')) {
+    repositories {
+      maven {
+        def releasesRepoUrl = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
+        def snapshotsRepoUrl = 'https://oss.sonatype.org/content/repositories/snapshots'
+        url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+        credentials {
+          username = sonatypeUsername
+          password = sonatypePassword
+        }
+      }
+    }
+  }
+  publications {
+    mavenJava(MavenPublication) {
+      from components.java
+      artifactId = 'fjage'
+      pom {
+        name = 'fjage'
+        packaging = 'jar'
+        description = 'Framework for Java and Groovy Agents'
+        url = 'http://github.com/org-arl/fjage'
+        licenses {
+          license {
+            name = '3-clause BSD License'
+            url = 'http://github.com/org-arl/fjage/blob/master/LICENSE.txt'
+            distribution = 'repo'
+          }
+        }
+        developers {
+          developer {
+            id = 'mchitre'
+            name = 'Mandar Chitre'
+          }
+        }
+        scm {
+          connection = 'scm:git:git://github.com/org-arl/fjage.git'
+          developerConnection = 'scm:git:git@github.com:org-arl/fjage.git'
+          url = 'http://github.com/org-arl/fjage'
+        }
+      }
+    }
+  }
+}
+
+signing {
+  sign publishing.publications.mavenJava
+}

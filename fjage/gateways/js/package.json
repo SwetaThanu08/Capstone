@@ -1,0 +1,49 @@
+{
+  "name": "fjage",
+  "version": "1.12.2",
+  "description": "JS Gateway for fjåge",
+  "main": "./dist/cjs/fjage.cjs",
+  "exports": {
+    "import": "./dist/esm/fjage.js",
+    "require": "./dist/cjs/fjage.cjs"
+  },
+  "type": "module",
+  "files": [
+    "dist/**"
+  ],
+  "scripts": {
+    "build": "npx rimraf -rf dist/ && eslint src/*.js && rollup --silent -c rollup.config.js",
+    "pretest": "npx playwright install --with-deps && node test/spec/create-spec.cjs",
+    "test": "node test/run-tests.cjs",
+    "docs": "documentation build src/fjage.js -f html --github --document-exported -o ../../docs/jsdoc",
+    "clean": "npx rimraf -rf dist/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/org-arl/fjage.git"
+  },
+  "contributors": [
+    "Mandar Chitre (http://www.chitre.net)",
+    "Chinmay Pendharkar (http://chinpen.net)"
+  ],
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/org-arl/fjage/issues"
+  },
+  "homepage": "https://github.com/org-arl/fjage#readme",
+  "devDependencies": {
+    "@babel/eslint-parser": "^7.23.3",
+    "@playwright/test": "^1.41.0",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-terser": "^0.4.4",
+    "documentation": "^14.0.2",
+    "eslint": "^8.55.0",
+    "globals": "^13.24.0",
+    "jasmine": "^5.1.0",
+    "node-static": "^0.7.11",
+    "rollup": "^4.8.0"
+  },
+  "dependencies": {
+    "browser-or-node": "^2.1.1"
+  }
+}
