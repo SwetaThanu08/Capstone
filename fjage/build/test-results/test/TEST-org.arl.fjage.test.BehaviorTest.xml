@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.arl.fjage.test.BehaviorTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2024-04-10T18:24:53" hostname="sweta-VM" time="4.296">
+  <properties/>
+  <testcase name="testOneShot" classname="org.arl.fjage.test.BehaviorTest" time="1.139"/>
+  <testcase name="testWaker" classname="org.arl.fjage.test.BehaviorTest" time="0.127"/>
+  <testcase name="testPoisson" classname="org.arl.fjage.test.BehaviorTest" time="1.458"/>
+  <testcase name="testBackoff" classname="org.arl.fjage.test.BehaviorTest" time="0.139"/>
+  <testcase name="testMessage" classname="org.arl.fjage.test.BehaviorTest" time="0.141"/>
+  <testcase name="testCyclic" classname="org.arl.fjage.test.BehaviorTest" time="0.125"/>
+  <testcase name="testTicker" classname="org.arl.fjage.test.BehaviorTest" time="1.166"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[0|INFO|org.arl.fjage.test.BehaviorTest@1:run|Simulation started
+300000|INFO|org.arl.fjage.test.BehaviorTest@1:run|Simulation finished
+0|INFO|org.arl.fjage.test.BehaviorTest@1:run|Simulation started
+300000|INFO|org.arl.fjage.test.BehaviorTest@1:run|Simulation finished
+0|INFO|org.arl.fjage.test.BehaviorTest@1:run|Simulation started
+3727917|INFO|org.arl.fjage.test.BehaviorTest@1:run|Simulation finished
+0|INFO|org.arl.fjage.test.BehaviorTest@1:run|Simulation started
+300000|INFO|org.arl.fjage.test.BehaviorTest@1:run|Simulation finished
+0|INFO|org.arl.fjage.test.BehaviorTest@1:run|Simulation started
+300000|INFO|org.arl.fjage.test.BehaviorTest@1:run|Simulation finished
+0|INFO|org.arl.fjage.test.BehaviorTest@1:run|Simulation started
+300000|INFO|org.arl.fjage.test.BehaviorTest@1:run|Simulation finished
+0|INFO|org.arl.fjage.test.BehaviorTest@1:run|Simulation started
+305000|INFO|org.arl.fjage.test.BehaviorTest@1:run|Simulation finished
+]]></system-err>
+</testsuite>

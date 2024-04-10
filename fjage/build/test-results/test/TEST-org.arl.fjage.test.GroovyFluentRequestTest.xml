@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.arl.fjage.test.GroovyFluentRequestTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2024-04-10T18:25:20" hostname="sweta-VM" time="3.189">
+  <properties/>
+  <testcase name="testTimeout" classname="org.arl.fjage.test.GroovyFluentRequestTest" time="1.307"/>
+  <testcase name="testFailure" classname="org.arl.fjage.test.GroovyFluentRequestTest" time="1.15"/>
+  <testcase name="testOtherwise" classname="org.arl.fjage.test.GroovyFluentRequestTest" time="0.164"/>
+  <testcase name="testAgree" classname="org.arl.fjage.test.GroovyFluentRequestTest" time="0.181"/>
+  <testcase name="testInform" classname="org.arl.fjage.test.GroovyFluentRequestTest" time="0.011"/>
+  <testcase name="testAgreeWait" classname="org.arl.fjage.test.GroovyFluentRequestTest" time="0.195"/>
+  <testcase name="testRefuse" classname="org.arl.fjage.test.GroovyFluentRequestTest" time="0.179"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[0|INFO|org.arl.fjage.test.GroovyFluentRequestTest@1:run|Simulation started
+300000|INFO|org.arl.fjage.test.GroovyFluentRequestTest@1:run|Simulation finished
+0|INFO|org.arl.fjage.test.GroovyFluentRequestTest@1:run|Simulation started
+300000|INFO|org.arl.fjage.test.GroovyFluentRequestTest@1:run|Simulation finished
+0|INFO|org.arl.fjage.test.GroovyFluentRequestTest@1:run|Simulation started
+300000|INFO|org.arl.fjage.test.GroovyFluentRequestTest@1:run|Simulation finished
+0|INFO|org.arl.fjage.test.GroovyFluentRequestTest@1:run|Simulation started
+300000|INFO|org.arl.fjage.test.GroovyFluentRequestTest@1:run|Simulation finished
+0|INFO|org.arl.fjage.test.GroovyFluentRequestTest@1:run|Simulation started
+300000|INFO|org.arl.fjage.test.GroovyFluentRequestTest@1:run|Simulation finished
+0|INFO|org.arl.fjage.test.GroovyFluentRequestTest@1:run|Simulation started
+300000|INFO|org.arl.fjage.test.GroovyFluentRequestTest@1:run|Simulation finished
+]]></system-err>
+</testsuite>

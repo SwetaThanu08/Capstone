@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.arl.fjage.test.SimpleFirewallTests" tests="6" skipped="0" failures="0" errors="0" timestamp="2024-04-10T18:22:52" hostname="sweta-VM" time="0.407">
+  <properties/>
+  <testcase name="distinctStates" classname="org.arl.fjage.test.SimpleFirewallTests" time="0.385"/>
+  <testcase name="distinctInstances" classname="org.arl.fjage.test.SimpleFirewallTests" time="0.006"/>
+  <testcase name="authentication1" classname="org.arl.fjage.test.SimpleFirewallTests" time="0.003"/>
+  <testcase name="authentication2" classname="org.arl.fjage.test.SimpleFirewallTests" time="0.004"/>
+  <testcase name="badAuthentication" classname="org.arl.fjage.test.SimpleFirewallTests" time="0.001"/>
+  <testcase name="allowAll" classname="org.arl.fjage.test.SimpleFirewallTests" time="0.002"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[1712773372241|INFO|org.arl.fjage.test.SimpleFirewallTests@1:beforeTesting|==== BEGIN distinctStates ====
+1712773372429|INFO|org.arl.fjage.remote.EnumTypeAdapter@1:<clinit>|Groovy detected, using GroovyClassLoader
+1712773372472|INFO|org.arl.fjage.remote.MessageAdapterFactory@1:<clinit>|Groovy detected, using GroovyClassLoader
+1712773372563|INFO|org.arl.fjage.test.SimpleFirewallTests@1:afterTesting|==== END distinctStates ====
+1712773372570|INFO|org.arl.fjage.test.SimpleFirewallTests@1:beforeTesting|==== BEGIN distinctInstances ====
+1712773372575|INFO|org.arl.fjage.test.SimpleFirewallTests@1:afterTesting|==== END distinctInstances ====
+1712773372578|INFO|org.arl.fjage.test.SimpleFirewallTests@1:beforeTesting|==== BEGIN authentication1 ====
+1712773372579|INFO|org.arl.fjage.test.SimpleFirewallTests@1:afterTesting|==== END authentication1 ====
+1712773372581|INFO|org.arl.fjage.test.SimpleFirewallTests@1:beforeTesting|==== BEGIN authentication2 ====
+1712773372584|INFO|org.arl.fjage.test.SimpleFirewallTests@1:afterTesting|==== END authentication2 ====
+1712773372586|INFO|org.arl.fjage.test.SimpleFirewallTests@1:beforeTesting|==== BEGIN badAuthentication ====
+1712773372587|INFO|org.arl.fjage.test.SimpleFirewallTests@1:afterTesting|==== END badAuthentication ====
+1712773372588|INFO|org.arl.fjage.test.SimpleFirewallTests@1:beforeTesting|==== BEGIN allowAll ====
+1712773372589|INFO|org.arl.fjage.test.SimpleFirewallTests@1:afterTesting|==== END allowAll ====
+]]></system-err>
+</testsuite>

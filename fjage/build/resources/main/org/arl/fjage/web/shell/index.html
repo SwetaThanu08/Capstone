@@ -1,0 +1,222 @@
+<!-- fjåge Web Shell
+
+# API
+
+- shellready : will be true when the shell is ready to accept input
+- hideModeToggle : if true, the mode toggle button will be hidden
+- window.postMessage({theme: 'dark'}) : to set the theme to 'dark' mode
+
+-->
+<html>
+<head>
+  <title>fjåge shell</title>
+  <meta charset='utf-8'/>
+  <link rel="stylesheet" href="xterm.css" />
+  <script src='xterm.js'></script>
+  <script src='xterm-addon-attach.js'></script>
+  <script src='xterm-addon-fit.js'></script>
+  <script src='xterm-addon-web-links.js'></script>
+  <style>
+    html {
+      height: 100%;
+    }
+    body {
+      position: absolute;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+      margin: 0px;
+      padding: 0px;
+    }
+    #terminal {
+      display: block;
+      position: relative;
+      height: 100%;
+      width: 100%;
+      margin: 0px;
+      padding: 0px;
+    }
+    .container {
+      position: relative;
+    }
+    .btn-container {
+      position: absolute;
+      top: 5px;
+      right: 20px;
+      z-index: 100;
+    }
+
+    button.modeToggle {
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      margin: 0;
+    }
+    *::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    *::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    *::-webkit-scrollbar-thumb {
+      background-color: rgba(134, 134, 134, 0.46);
+      border-radius: 20px;
+      border: 4px solid transparent;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id='terminal'></div>
+    <div class="btn-container" title="Toggle Light/Dark ColorMode">
+      <button class="modeToggle" id="darkmode-tgl">
+        <svg id="darkmode-dark" style="display: none;" data-v-bd832875="" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="icon" width="24px" height="24px" viewBox="0 0 24 24"><path fill="white" d="M10 7a7 7 0 0 0 12 4.9v.1c0 5.523-4.477 10-10 10S2 17.523 2 12S6.477 2 12 2h.1A6.98 6.98 0 0 0 10 7m-6 5a8 8 0 0 0 15.062 3.762A9 9 0 0 1 8.238 4.938A7.999 7.999 0 0 0 4 12"></path></svg>
+        <svg id="darkmode-light" style="display: none;" data-v-bd832875="" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="icon" width="24px" height="24px" viewBox="0 0 24 24"><path fill="currentColor" d="M12 18a6 6 0 1 1 0-12a6 6 0 0 1 0 12m0-2a4 4 0 1 0 0-8a4 4 0 0 0 0 8M11 1h2v3h-2zm0 19h2v3h-2zM3.515 4.929l1.414-1.414L7.05 5.636L5.636 7.05zM16.95 18.364l1.414-1.414l2.121 2.121l-1.414 1.414zm2.121-14.85l1.414 1.415l-2.121 2.121l-1.414-1.414zM5.636 16.95l1.414 1.414l-2.121 2.121l-1.414-1.414zM23 11v2h-3v-2zM4 11v2H1v-2z"></path></svg>
+      </button>
+    </div>
+  </div>
+  <script>
+    const ignoreKeys = ['Meta-R', 'Meta-Shift-R'];
+    let defaultCursorWidth;
+    let rtime = 0;
+    let resizing = false;
+    let delta = 200;
+    let fitAddon;
+    let currentTheme = null;
+    window.shellready = false;
+    function connectSocket(term, url, path){
+      const ws = new WebSocket('ws://' + url + path);
+      let attachAddon;
+      window.ws = ws;
+      ws.onerror = () => reconnectSocket(term, attachAddon, url, path, ws)
+      ws.onclose = () => reconnectSocket(term, attachAddon, url, path, ws)
+      ws.onopen = () => {
+        console.log('Connected to ', path);
+        attachAddon = new AttachAddon.AttachAddon(ws);
+        term.loadAddon(attachAddon);
+        // enable cursor to indicate connection is back
+        term.write("\u001B[?25h");
+        term.write('\x1b[1G\x1b[2K');
+        term.setOption('cursorBlink', true);
+      };
+      ws.onmessage = () => window.shellready = true;
+    }
+    function reconnectSocket(term,attachAddon,url, path, ws){
+      disconnectSocket(term,attachAddon, ws);
+      setTimeout(() => connectSocket(term, url, path),1000);
+    }
+    function disconnectSocket(term,attachAddon, ws){
+      // disable cursor to indicate no connection
+      if (attachAddon) attachAddon.dispose();
+      window.shellready = false;
+      term.write("\u001B[?25l");
+      term.write('\x1b[1G\x1b[2K\x1b[31m\x1b[2m(connection lost)\x1b[0m');
+      ws.onmessage = null;
+      ws.onopen = null;
+      ws.onclose = null;
+      ws.onerror = null;
+    }
+    function setTheme(term, theme){
+      if (theme == 'light'){
+        term.setOption('theme', {
+          background: '#fdf6e3',
+          foreground: '#002B36',
+          yellow: '#b58900',
+          white: '#002B36',
+          green: '#859900',
+          blue: '#268bd2',
+          red: '#dc322f',
+          cursor: '#586e75',
+          selection: '#d3c494'
+        });
+        document.getElementById('darkmode-dark').style.display = 'none';
+        document.getElementById('darkmode-light').style.display = 'block';
+        currentTheme = theme;
+      }else if (theme == 'dark'){
+        term.setOption('theme', {
+          background: '#000000',
+          foreground: '#ffffff',
+          yellow: '#c4a000',
+          white: '#d3d7cf',
+          green: '#4e9a06',
+          blue: '#3465a4',
+          red: '#cc0000',
+          cursor: '#ff6e75'
+        });
+        document.getElementById('darkmode-dark').style.display = 'block';
+        document.getElementById('darkmode-light').style.display = 'none';
+        currentTheme = theme;
+      }
+    };
+    function resizeend() {
+      if (new Date() - rtime < delta) {
+        setTimeout(resizeend, delta);
+      } else {
+        resizing = false;
+        fitAddon.fit();
+      }
+    }
+    window.addEventListener('load', () => {
+      let hideModeToggle = false;
+      if (window.parent.document.documentElement.classList.contains('dark')){
+        currentTheme = 'dark';
+        hideModeToggle = true;
+      }else if (window.parent.document.documentElement.classList.contains('light')){
+        currentTheme = 'light';
+        hideModeToggle = true;
+      }
+      hideModeToggle = hideModeToggle || window.parent.hideModeToggle;
+      const darkmodeBtn = document.getElementById('darkmode-tgl');
+      let userTheme = false;
+
+      const term = new Terminal();
+      fitAddon = new FitAddon.FitAddon();
+      term.loadAddon(fitAddon);
+      term.loadAddon(new WebLinksAddon.WebLinksAddon());
+
+      term.open(document.getElementById('terminal'));
+      fitAddon.fit();
+      defaultCursorWidth = term.getOption("cursorWidth");
+
+      if (currentTheme == null && window.matchMedia) currentTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+
+      if (hideModeToggle){
+        darkmodeBtn.parentElement.style.display = 'none';
+        window.addEventListener('message', evt => {
+          if (evt.data && evt.data.theme){
+            setTheme(term, evt.data.theme);
+          }
+        });
+      }else {
+        if (window.matchMedia){
+          window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+            if (userTheme) return;
+            const newColorScheme = e.matches ? "dark" : "light";
+            setTheme(term, newColorScheme);
+          });
+        }
+        darkmodeBtn.addEventListener('click', evt => {
+            setTheme(term, currentTheme == 'dark' ? 'light' : 'dark');
+            userTheme = true;
+        })
+      }
+      setTheme(term, currentTheme);
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const url = urlParams.get('url') || window.location.hostname + ':' + window.location.port;;
+      const path = window.location.pathname.replace(/\/[^/]*$/, '/ws/');
+      connectSocket(term, url, path);
+    });
+    window.addEventListener('resize', () => {
+      rtime = new Date();
+      if (!resizing) {
+        resizing = true;
+        setTimeout(resizeend, delta);
+      }
+    })
+  </script>
+</body>
+</html>

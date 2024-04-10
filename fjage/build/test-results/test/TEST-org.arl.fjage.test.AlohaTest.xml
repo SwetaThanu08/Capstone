@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.arl.fjage.test.AlohaTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2024-04-10T18:25:04" hostname="sweta-VM" time="9.491">
+  <properties/>
+  <testcase name="alohaTest" classname="org.arl.fjage.test.AlohaTest" time="9.491"/>
+  <system-out><![CDATA[Running...
+Done
+Simulation time: 1000.231 seconds
+Offered Load: 50%
+Success: 1948/4948 = 39.3694421989%, 1822/5005 = 36.4035964036%
+Throughput: 19.475501159232216%, 18.215792152012884%
+]]></system-out>
+  <system-err><![CDATA[1712773504769|INFO|org.arl.fjage.remote.MasterContainer@295:shutdown|All agents have shutdown
+]]></system-err>
+</testsuite>

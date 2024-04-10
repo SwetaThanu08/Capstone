@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.arl.fjage.test.GroovyBehaviorTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2024-04-10T18:25:14" hostname="sweta-VM" time="6.053">
+  <properties/>
+  <testcase name="testOneShot" classname="org.arl.fjage.test.GroovyBehaviorTest" time="1.192"/>
+  <testcase name="testWaker" classname="org.arl.fjage.test.GroovyBehaviorTest" time="0.164"/>
+  <testcase name="testPoisson" classname="org.arl.fjage.test.GroovyBehaviorTest" time="1.888"/>
+  <testcase name="testBackoff" classname="org.arl.fjage.test.GroovyBehaviorTest" time="0.209"/>
+  <testcase name="testMessage" classname="org.arl.fjage.test.GroovyBehaviorTest" time="1.252"/>
+  <testcase name="testCyclic" classname="org.arl.fjage.test.GroovyBehaviorTest" time="0.149"/>
+  <testcase name="testTicker" classname="org.arl.fjage.test.GroovyBehaviorTest" time="1.195"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[0|INFO|org.arl.fjage.test.GroovyBehaviorTest@1:run|Simulation started
+300000|INFO|org.arl.fjage.test.GroovyBehaviorTest@1:run|Simulation finished
+0|INFO|org.arl.fjage.test.GroovyBehaviorTest@1:run|Simulation started
+300000|INFO|org.arl.fjage.test.GroovyBehaviorTest@1:run|Simulation finished
+0|INFO|org.arl.fjage.test.GroovyBehaviorTest@1:run|Simulation started
+3623347|INFO|org.arl.fjage.test.GroovyBehaviorTest@1:run|Simulation finished
+0|INFO|org.arl.fjage.test.GroovyBehaviorTest@1:run|Simulation started
+300000|INFO|org.arl.fjage.test.GroovyBehaviorTest@1:run|Simulation finished
+0|INFO|org.arl.fjage.test.GroovyBehaviorTest@1:run|Simulation started
+300000|INFO|org.arl.fjage.test.GroovyBehaviorTest@1:run|Simulation finished
+0|INFO|org.arl.fjage.test.GroovyBehaviorTest@1:run|Simulation started
+300000|INFO|org.arl.fjage.test.GroovyBehaviorTest@1:run|Simulation finished
+0|INFO|org.arl.fjage.test.GroovyBehaviorTest@1:run|Simulation started
+300000|INFO|org.arl.fjage.test.GroovyBehaviorTest@1:run|Simulation finished
+]]></system-err>
+</testsuite>
