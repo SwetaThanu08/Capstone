@@ -51,6 +51,7 @@ dependencies {
   api 'com.fazecast:jSerialComm:2.9.3'
   testImplementation 'junit:junit:4.13.2'
   testImplementation 'net.jodah:concurrentunit:0.4.6'
+  implementation fileTree(dir: 'lib', include: ['*.jar'])
 }
 
 compileJava {
